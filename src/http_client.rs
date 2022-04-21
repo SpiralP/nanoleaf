@@ -1,10 +1,8 @@
-//use failure::Error;
-use crate::error::Error;
-use futures::{Future, IntoFuture};
 use log::info;
-use reqwest::header::ACCEPT;
-use reqwest::r#async::{Body, Client as ReqwestClient, Response};
+use reqwest::{header::ACCEPT, Body, Client as ReqwestClient, Response};
 use url::Url;
+
+use crate::error::Result;
 
 #[derive(Debug)]
 pub(crate) struct HttpClient {
@@ -20,79 +18,43 @@ impl HttpClient {
         }
     }
 
-    pub(crate) fn post<B: Into<Body>>(
-        &self,
-        path: &str,
-        body: B,
-    ) -> impl Future<Item = Response, Error = Error> {
-        let request_url = self.base_url.join(path);
+    pub(crate) async fn post<B: Into<Body>>(&self, path: &str, body: B) -> Result<Response> {
+        let url = self.base_url.join(path)?;
         let client = self.inner.clone();
 
-        request_url
-            .map_err(Error::from)
-            .into_future()
-            .and_then(move |url| {
-                info!("POST {}", url.as_str());
+        info!("POST {}", url.as_str());
 
-                client
-                    .post(url.as_str())
-                    .body(body.into())
-                    .send()
-                    .map_err(Error::from)
-            })
+        Ok(client.post(url.as_str()).body(body.into()).send().await?)
     }
 
-    pub(crate) fn get(&self, path: &str) -> impl Future<Item = Response, Error = Error> {
-        let request_url = self.base_url.join(path);
+    pub(crate) async fn get(&self, path: &str) -> Result<Response> {
+        let url = self.base_url.join(path)?;
         let client = self.inner.clone();
 
-        request_url
-            .map_err(Error::from)
-            .into_future()
-            .and_then(move |url| {
-                info!("GET {}", url.as_str());
+        info!("GET {}", url.as_str());
 
-                client
-                    .get(url.as_str())
-                    .header(ACCEPT, "application/json")
-                    .send()
-                    .map_err(Error::from)
-            })
+        Ok(client
+            .get(url.as_str())
+            .header(ACCEPT, "application/json")
+            .send()
+            .await?)
     }
 
-    pub(crate) fn delete(&self, path: &str) -> impl Future<Item = Response, Error = Error> {
-        let request_url = self.base_url.join(path);
+    pub(crate) async fn delete(&self, path: &str) -> Result<Response> {
+        let url = self.base_url.join(path)?;
         let client = self.inner.clone();
 
-        request_url
-            .map_err(Error::from)
-            .into_future()
-            .and_then(move |url| {
-                info!("DELETE {}", url.as_str());
+        info!("DELETE {}", url.as_str());
 
-                client.get(url.as_str()).send().map_err(Error::from)
-            })
+        Ok(client.get(url.as_str()).send().await?)
     }
 
-    pub(crate) fn put<B: Into<Body>>(
-        &self,
-        path: &str,
-        body: B,
-    ) -> impl Future<Item = Response, Error = Error> {
-        let request_url = self.base_url.join(path);
+    pub(crate) async fn put<B: Into<Body>>(&self, path: &str, body: B) -> Result<Response> {
+        let url = self.base_url.join(path)?;
         let client = self.inner.clone();
 
-        request_url
-            .map_err(Error::from)
-            .into_future()
-            .and_then(move |url| {
-                info!("PUT {}", url.as_str());
+        info!("PUT {}", url.as_str());
 
-                client
-                    .put(url.as_str())
-                    .body(body.into())
-                    .send()
-                    .map_err(Error::from)
-            })
+        Ok(client.put(url.as_str()).body(body.into()).send().await?)
     }
 }

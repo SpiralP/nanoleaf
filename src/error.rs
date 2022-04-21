@@ -6,6 +6,8 @@ pub enum Error {
     Url(url::ParseError),
 }
 
+pub type Result<T> = std::result::Result<T, Error>;
+
 impl std::error::Error for Error {}
 
 impl From<reqwest::Error> for Error {
