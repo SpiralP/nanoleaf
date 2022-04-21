@@ -46,7 +46,7 @@ impl Client {
     // Panel Info
     // ====================
 
-    pub async fn get_panels(&self, token: &str) -> Result<PanelInfo> {
+    pub async fn get_all_info(&self, token: &str) -> Result<PanelInfo> {
         self.get_value(token).await
     }
 
