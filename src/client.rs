@@ -54,16 +54,19 @@ impl Client {
     // Panel State
     // ====================
 
-    pub async fn get_state(&self, token: &str) -> Result<On> {
+    pub async fn get_state(&self, token: &str) -> Result<State> {
+        self.get_value(&format!("{}/state", token)).await
+    }
+
+    // ====================
+    // On
+    // ====================
+
+    pub async fn get_on(&self, token: &str) -> Result<On> {
         self.get_value(&format!("{}/state/on", token)).await
     }
 
-    pub async fn set_state(&self, token: &str, state: NanoleafState) -> Result<()> {
-        let val = match state {
-            NanoleafState::On => true,
-            NanoleafState::Off => false,
-        };
-        let on = On { value: val };
+    pub async fn set_on(&self, token: &str, on: On) -> Result<()> {
         self.put_value(&format!("{}/state", token), json!({ "on": on }).to_string())
             .await
     }
