@@ -1,12 +1,12 @@
 use serde::{Deserialize, Serialize};
 use serde_repr::*;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Authorization {
     pub auth_token: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PanelInfo {
     pub name: String,
     pub manufacturer: String,
@@ -21,7 +21,7 @@ pub struct PanelInfo {
     pub panel_layout: PanelLayout,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct State {
     #[serde(rename = "colorMode")]
     pub color_mode: String,
@@ -32,40 +32,40 @@ pub struct State {
     pub on: On,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct On {
     pub value: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Range {
     pub max: u32,
     pub min: u32,
     pub value: u32,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Effects {
     #[serde(rename = "effectsList")]
     pub effects_list: Vec<String>,
     pub select: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PanelLayout {
     #[serde(rename = "globalOrientation")]
     pub global_orientation: GlobalOrientation,
     pub layout: Layout,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GlobalOrientation {
     pub max: u32,
     pub min: u32,
     pub value: u32,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Layout {
     #[serde(rename = "numPanels")]
     pub num_panels: u32,
@@ -75,7 +75,7 @@ pub struct Layout {
     pub position_data: Vec<Position>,
 }
 
-#[derive(Debug, Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr)]
 #[repr(u8)]
 pub enum ShapeType {
     Triangle = 0,
@@ -86,7 +86,7 @@ pub enum ShapeType {
     PowerSupply = 5,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Position {
     #[serde(rename = "panelId")]
     pub panel_id: u32,
@@ -97,7 +97,7 @@ pub struct Position {
     pub shape_type: ShapeType,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Brightness {
     Increment(i32),
@@ -105,7 +105,7 @@ pub enum Brightness {
     SetWithDuration { value: u32, duration: u32 },
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum SetRange {
     Increment(i32),
